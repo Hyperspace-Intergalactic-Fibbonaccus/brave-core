@@ -45,12 +45,14 @@ class TrackingProtectionService : public BaseBraveShieldsService {
   bool ShouldStartRequest(const GURL& spec,
     content::ResourceType resource_type,
     const std::string& tab_host) override;
+  bool ShouldStoreState(const GURL& url);
 
  protected:
   bool Init() override;
   void Cleanup() override;
   void OnComponentReady(const std::string& component_id,
       const base::FilePath& install_dir) override;
+  void ParseStorageTrackersData();
 
  private:
   friend class ::TrackingProtectionServiceTest;
@@ -64,6 +66,7 @@ class TrackingProtectionService : public BaseBraveShieldsService {
   std::vector<std::string> GetThirdPartyHosts(const std::string& base_host);
 
   brave_shields::DATFileDataBuffer buffer_;
+  brave_shields::DATFileDataBuffer storage_trackers_buffer_;
 
   std::unique_ptr<CTPParser> tracking_protection_client_;
   // TODO: Temporary hack which matches both browser-laptop and Android code
@@ -71,6 +74,9 @@ class TrackingProtectionService : public BaseBraveShieldsService {
   std::vector<std::string> third_party_base_hosts_;
   std::map<std::string, std::vector<std::string>> third_party_hosts_cache_;
   std::mutex third_party_hosts_mutex_;
+
+  std::vector<std::string> first_party_storage_trackers_;
+  bool first_party_storage_trackers_initailized_;
 
   base::WeakPtrFactory<TrackingProtectionService> weak_factory_;
 
