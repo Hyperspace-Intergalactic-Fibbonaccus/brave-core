@@ -20,6 +20,7 @@
 #include "content/public/common/resource_type.h"
 
 class CTPParser;
+class HostContentSettingsMap;
 class TrackingProtectionServiceTest;
 
 namespace brave_shields {
@@ -45,7 +46,8 @@ class TrackingProtectionService : public BaseBraveShieldsService {
   bool ShouldStartRequest(const GURL& spec,
     content::ResourceType resource_type,
     const std::string& tab_host) override;
-  bool ShouldStoreState(const GURL& url);
+  bool ShouldStoreState(HostContentSettingsMap* map, 
+    const GURL& top_origin_url, const GURL& origin_url);
 
  protected:
   bool Init() override;

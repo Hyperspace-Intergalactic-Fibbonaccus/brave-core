@@ -6,11 +6,13 @@
 #define BRAVE_BROWSER_RENDERER_HOST_BRAVE_RENDER_MESSAGE_FILTER_H_
 
 #include "chrome/browser/renderer_host/chrome_render_message_filter.h"
-#include "components/content_settings/core/browser/host_content_settings_map.h"
 #include "content/public/browser/browser_message_filter.h"
+
+class HostContentSettingsMap;
 
 class BraveRenderMessageFilter : public ChromeRenderMessageFilter {
  public:
+  using ChromeRenderMessageFilter::ChromeRenderMessageFilter;
   BraveRenderMessageFilter(int render_process_id, Profile* profile);
   bool OnMessageReceived(const IPC::Message& message) override;
   
@@ -38,10 +40,7 @@ class BraveRenderMessageFilter : public ChromeRenderMessageFilter {
                         const base::string16& name,
                         bool* allowed);
 
-  bool ShouldStoreState(const GURL& origin_url, const GURL& top_origin_url);
-
   HostContentSettingsMap *host_content_settings_map_;
-  base::WeakPtrFactory<BraveRenderMessageFilter> weak_factory_;
 
   DISALLOW_COPY_AND_ASSIGN(BraveRenderMessageFilter);
 };

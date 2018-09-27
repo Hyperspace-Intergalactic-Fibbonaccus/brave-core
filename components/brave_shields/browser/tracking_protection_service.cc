@@ -16,8 +16,11 @@
 #include "base/memory/ptr_util.h"
 #include "base/strings/utf_string_conversions.h"
 #include "base/threading/thread_restrictions.h"
+#include "brave/components/brave_shields/browser/brave_shields_util.h"
 #include "brave/components/brave_shields/browser/dat_file_util.h"
+#include "brave/components/brave_shields/common/brave_shield_constants.h"
 #include "brave/vendor/tracking-protection/TPParser.h"
+#include "components/content_settings/core/browser/host_content_settings_map.h"
 
 #define NAVIGATION_TRACKERS_FILE "TrackingProtection.dat"
 #define STORAGE_TRACKERS_FILE "StorageTrackingProtection.dat"
@@ -90,15 +93,27 @@ bool TrackingProtectionService::ShouldStartRequest(const GURL& url,
   return false;
 }
 
-bool TrackingProtectionService::ShouldStoreState(const GURL& url) {
+bool TrackingProtectionService::ShouldStoreState(HostContentSettingsMap* map, const GURL& top_origin_url, 
+  const GURL& origin_url) {
+
   if (!first_party_storage_trackers_initailized_) {
     LOG(ERROR) << "First party storage trackers not initialized";
     return true;
-  }
+  }  
+  std::string host = origin_url.host();
 
-  std::string host = url.host();
-  return !(std::find(first_party_storage_trackers_.begin(), first_party_storage_trackers_.end(), host) 
-    != first_party_storage_trackers_.end());
+  bool allow_brave_shields = IsAllowContentSetting(
+      map, top_origin_url, origin_url, CONTENT_SETTINGS_TYPE_PLUGINS,
+      brave_shields::kBraveShields);
+
+  bool allow_trackers = IsAllowContentSetting(
+      map, top_origin_url, origin_url, CONTENT_SETTINGS_TYPE_PLUGINS, 
+      brave_shields::kTrackers);
+
+  bool denyStorage = std::find(first_party_storage_trackers_.begin(), first_party_storage_trackers_.end(), host) 
+        != first_party_storage_trackers_.end();
+
+  return !(allow_brave_shields && !allow_trackers && denyStorage);
 }
 
 void TrackingProtectionService::ParseStorageTrackersData() {
