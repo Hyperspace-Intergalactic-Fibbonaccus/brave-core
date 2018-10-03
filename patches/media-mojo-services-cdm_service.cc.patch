@@ -1,0 +1,145 @@
+diff --git a/media/mojo/services/cdm_service.cc b/media/mojo/services/cdm_service.cc
+index 1fdc540dd7585cf85c564e6df7c848a9dbeee40d..d08104ff0778742ff95644bd48612a4da4b0954f 100644
+--- a/media/mojo/services/cdm_service.cc
++++ b/media/mojo/services/cdm_service.cc
+@@ -96,7 +96,7 @@ class CdmFactoryImpl : public DeferredDestroy<mojom::CdmFactory> {
+       : client_(client),
+         interfaces_(std::move(interfaces)),
+         service_context_ref_(std::move(service_context_ref)) {
+-    DVLOG(1) << __func__;
++    LOG(ERROR) << __func__;
+ 
+     // base::Unretained is safe because |cdm_bindings_| is owned by |this|. If
+     // |this| is destructed, |cdm_bindings_| will be destructed as well and the
+@@ -105,7 +105,7 @@ class CdmFactoryImpl : public DeferredDestroy<mojom::CdmFactory> {
+         &CdmFactoryImpl::OnBindingConnectionError, base::Unretained(this)));
+   }
+ 
+-  ~CdmFactoryImpl() final { DVLOG(1) << __func__; }
++  ~CdmFactoryImpl() final { LOG(ERROR) << __func__; }
+ 
+   // mojom::CdmFactory implementation.
+   void CreateCdm(const std::string& key_system,
+@@ -131,7 +131,9 @@ class CdmFactoryImpl : public DeferredDestroy<mojom::CdmFactory> {
+ 
+  private:
+   media::CdmFactory* GetCdmFactory() {
++    LOG(ERROR) << "BSC]] CdmService::GetCdmFactory 1";
+     if (!cdm_factory_) {
++      LOG(ERROR) << "BSC]] CdmService::GetCdmFactory 2 - not available";
+       cdm_factory_ = client_->CreateCdmFactory(interfaces_.get());
+       DLOG_IF(ERROR, !cdm_factory_) << "CdmFactory not available.";
+     }
+@@ -163,18 +165,18 @@ class CdmFactoryImpl : public DeferredDestroy<mojom::CdmFactory> {
+ CdmService::CdmService(std::unique_ptr<Client> client)
+     : client_(std::move(client)),
+       service_release_delay_(kServiceContextRefReleaseDelay) {
+-  DVLOG(1) << __func__;
++  LOG(ERROR) << __func__;
+   DCHECK(client_);
+   registry_.AddInterface<mojom::CdmService>(
+       base::BindRepeating(&CdmService::Create, base::Unretained(this)));
+ }
+ 
+ CdmService::~CdmService() {
+-  DVLOG(1) << __func__;
++  LOG(ERROR) << __func__;
+ }
+ 
+ void CdmService::OnStart() {
+-  DVLOG(1) << __func__;
++  LOG(ERROR) << __func__;
+ 
+   ref_factory_.reset(new service_manager::ServiceContextRefFactory(
+       context()->CreateQuitClosure()));
+@@ -184,18 +186,20 @@ void CdmService::OnBindInterface(
+     const service_manager::BindSourceInfo& source_info,
+     const std::string& interface_name,
+     mojo::ScopedMessagePipeHandle interface_pipe) {
+-  DVLOG(1) << __func__ << ": interface_name = " << interface_name;
++  LOG(ERROR) << __func__ << ": interface_name = " << interface_name;
+ 
+   registry_.BindInterface(interface_name, std::move(interface_pipe));
+ }
+ 
+ bool CdmService::OnServiceManagerConnectionLost() {
++  LOG(ERROR) << "BSC]] CdmService::OnServiceManagerConnectionLost";
+   cdm_factory_bindings_.CloseAllBindings();
+   client_.reset();
+   return true;
+ }
+ 
+ void CdmService::Create(mojom::CdmServiceRequest request) {
++  LOG(ERROR) << "BSC]] CdmService::Create";
+   bindings_.AddBinding(this, std::move(request));
+ }
+ 
+@@ -206,14 +210,16 @@ void CdmService::LoadCdm(
+ #else
+ void CdmService::LoadCdm(const base::FilePath& cdm_path) {
+ #endif  // defined(OS_MACOSX)
+-  DVLOG(1) << __func__ << ": cdm_path = " << cdm_path.value();
++  LOG(ERROR) << __func__ << ": cdm_path = " << cdm_path.value();
+ 
+   // Ignore request if service has already stopped.
+   if (!client_)
+     return;
+ 
++  LOG(ERROR) << "BSC]] CdmService::LoadCdm 1";
+   CdmModule* instance = CdmModule::GetInstance();
+   if (instance->was_initialize_called()) {
++    LOG(ERROR) << "BSC]] CdmService::LoadCdm 2: initialize was called";
+     DCHECK_EQ(cdm_path, instance->GetCdmPath());
+     return;
+   }
+@@ -229,7 +235,7 @@ void CdmService::LoadCdm(const base::FilePath& cdm_path) {
+       DVLOG(3) << "token: " << token.token();
+       auto extension = sandbox::SeatbeltExtension::FromToken(std::move(token));
+       if (!extension->Consume()) {
+-        DVLOG(1) << "Failed to consume sandbox seatbelt extension. This could "
++        LOG(ERROR) << "Failed to consume sandbox seatbelt extension. This could "
+                     "happen if --no-sandbox is specified.";
+       }
+       extensions.push_back(std::move(extension));
+@@ -238,10 +244,14 @@ void CdmService::LoadCdm(const base::FilePath& cdm_path) {
+ #endif  // defined(OS_MACOSX)
+ 
+ #if BUILDFLAG(ENABLE_CDM_HOST_VERIFICATION)
++  LOG(ERROR) << "BSC]] CdmService::LoadCdm 3";
+   std::vector<CdmHostFilePath> cdm_host_file_paths;
+   client_->AddCdmHostFilePaths(&cdm_host_file_paths);
++  LOG(ERROR) << "BSC]] CdmService::LoadCdm 4";
+   bool success = instance->Initialize(cdm_path, cdm_host_file_paths);
++  LOG(ERROR) << "BSC]] CdmService::LoadCdm 5";
+ #else
++  LOG(ERROR) << "BSC]] CdmService::LoadCdm 6 - UNVERIFIED!!!11";
+   bool success = instance->Initialize(cdm_path);
+ #endif  // BUILDFLAG(ENABLE_CDM_HOST_VERIFICATION)
+ 
+@@ -254,17 +264,25 @@ void CdmService::LoadCdm(const base::FilePath& cdm_path) {
+ #endif  // defined(OS_MACOSX)
+ 
+   // Always called within the sandbox.
+-  if (success)
++  if (success) {
++    LOG(ERROR) << "BSC]] CdmService::LoadCdm 7 - calling InitializeCdmModule";
+     instance->InitializeCdmModule();
++  } else {
++    LOG(ERROR) << "BSC]] CdmService::LoadCdm 8 - success=falsey";
++  }
+ }
+ 
+ void CdmService::CreateCdmFactory(
+     mojom::CdmFactoryRequest request,
+     service_manager::mojom::InterfaceProviderPtr host_interfaces) {
++
++  LOG(ERROR) << "BSC]] CdmService::CreateCdmFactory 1";
+   // Ignore request if service has already stopped.
+   if (!client_)
+     return;
+ 
++
++  LOG(ERROR) << "BSC]] CdmService::CreateCdmFactory 2";
+   std::unique_ptr<ServiceContextRef> service_context_ref =
+       service_release_delay_ > base::TimeDelta()
+           ? std::make_unique<DelayedReleaseServiceContextRef>(

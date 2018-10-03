@@ -1,0 +1,12 @@
+diff --git a/media/cdm/default_cdm_factory.cc b/media/cdm/default_cdm_factory.cc
+index 118b4e5c39af6b3feed5f0f08e782b546f08000c..5d6f39a03d499cfbeacd418a72e468e56b1d4c21 100644
+--- a/media/cdm/default_cdm_factory.cc
++++ b/media/cdm/default_cdm_factory.cc
+@@ -41,6 +41,7 @@ void DefaultCdmFactory::Create(
+     const SessionKeysChangeCB& session_keys_change_cb,
+     const SessionExpirationUpdateCB& session_expiration_update_cb,
+     const CdmCreatedCB& cdm_created_cb) {
++  LOG(ERROR) << "BSC]] DefaultCdmFactory::Create";
+   if (security_origin.unique()) {
+     base::ThreadTaskRunnerHandle::Get()->PostTask(
+         FROM_HERE, base::Bind(cdm_created_cb, nullptr, "Invalid origin."));

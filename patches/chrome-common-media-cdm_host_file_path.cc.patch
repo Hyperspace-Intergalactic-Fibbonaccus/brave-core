@@ -1,5 +1,5 @@
 diff --git a/chrome/common/media/cdm_host_file_path.cc b/chrome/common/media/cdm_host_file_path.cc
-index c6030f417db0ea1aca7f1a618a174ab6bc9cb516..c2ac2f758b17ed4de32026c728cf73356ba67357 100644
+index c6030f417db0ea1aca7f1a618a174ab6bc9cb516..819d38f69468e973aa5687ba7a97340581fcb72f 100644
 --- a/chrome/common/media/cdm_host_file_path.cc
 +++ b/chrome/common/media/cdm_host_file_path.cc
 @@ -17,7 +17,7 @@
@@ -11,3 +11,49 @@ index c6030f417db0ea1aca7f1a618a174ab6bc9cb516..c2ac2f758b17ed4de32026c728cf7335
  
  namespace {
  
+@@ -42,8 +42,10 @@ void AddCdmHostFilePaths(
+ 
+ #if defined(OS_WIN)
+ 
++  LOG(ERROR) << "BSC]] AddCdmHostFilePaths 1";
++
+   static const base::FilePath::CharType* const kUnversionedFiles[] = {
+-      FILE_PATH_LITERAL("chrome.exe")};
++      FILE_PATH_LITERAL("brave.exe")};
+   static const base::FilePath::CharType* const kVersionedFiles[] = {
+       FILE_PATH_LITERAL("chrome.dll"), FILE_PATH_LITERAL("chrome_child.dll")};
+ 
+@@ -53,6 +55,8 @@ void AddCdmHostFilePaths(
+     NOTREACHED();
+   base::FilePath version_dir(chrome_exe_dir.AppendASCII(CHROME_VERSION_STRING));
+ 
++  LOG(ERROR) << "BSC]] AddCdmHostFilePaths 2: version folder: " << version_dir.value();
++
+   cdm_host_file_paths->reserve(arraysize(kUnversionedFiles) +
+                                arraysize(kVersionedFiles));
+ 
+@@ -61,14 +65,14 @@ void AddCdmHostFilePaths(
+     base::FilePath file_path = chrome_exe_dir.Append(kUnversionedFiles[i]);
+     base::FilePath sig_path =
+         GetSigFilePath(version_dir.Append(kUnversionedFiles[i]));
+-    DVLOG(2) << __func__ << ": unversioned file " << i << " at "
++    LOG(ERROR) << "BSC]] AddCdmHostFilePaths 3: unversioned file " << i << " at "
+              << file_path.value() << ", signature file " << sig_path.value();
+     cdm_host_file_paths->emplace_back(file_path, sig_path);
+   }
+ 
+   for (size_t i = 0; i < arraysize(kVersionedFiles); ++i) {
+     base::FilePath file_path = version_dir.Append(kVersionedFiles[i]);
+-    DVLOG(2) << __func__ << ": versioned file " << i << " at "
++    LOG(ERROR) << "BSC]] AddCdmHostFilePaths 4: versioned file " << i << " at "
+              << file_path.value();
+     cdm_host_file_paths->emplace_back(file_path, GetSigFilePath(file_path));
+   }
+@@ -111,6 +115,7 @@ void AddCdmHostFilePaths(
+ 
+ void AddCdmHostFilePaths(
+     std::vector<media::CdmHostFilePath>* cdm_host_file_paths) {
++  LOG(ERROR) << "BSC]] NOT IMPLEMENTED";
+   NOTIMPLEMENTED() << "CDM host file paths need to be provided for the CDM to "
+                       "verify the host.";
+ }

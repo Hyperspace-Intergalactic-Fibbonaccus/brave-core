@@ -1,0 +1,60 @@
+diff --git a/content/browser/media/media_interface_proxy.cc b/content/browser/media/media_interface_proxy.cc
+index 82b0c8c61ac4fc623056c96e62a002c1a8c79067..2fc4eda9f7142db80d85e4e6201b91506abf4178 100644
+--- a/content/browser/media/media_interface_proxy.cc
++++ b/content/browser/media/media_interface_proxy.cc
+@@ -183,12 +183,15 @@ void MediaInterfaceProxy::CreateRenderer(
+ void MediaInterfaceProxy::CreateCdm(
+     const std::string& key_system,
+     media::mojom::ContentDecryptionModuleRequest request) {
++  LOG(ERROR) << "BSC]] MediaInterfaceProxy::CreateCdm 1";
+   DCHECK(thread_checker_.CalledOnValidThread());
+ #if !BUILDFLAG(ENABLE_LIBRARY_CDMS)
++  LOG(ERROR) << "BSC]] MediaInterfaceProxy::CreateCdm - ENABLE_LIBRARY_CDMS=false";
+   auto* factory = GetMediaInterfaceFactory();
+   if (factory)
+     factory->CreateCdm(key_system, std::move(request));
+ #else
++  LOG(ERROR) << "BSC]] MediaInterfaceProxy::CreateCdm - ENABLE_LIBRARY_CDMS=true";
+   auto* factory = GetCdmFactory(key_system);
+   if (factory)
+     factory->CreateCdm(key_system, std::move(request));
+@@ -301,18 +304,22 @@ media::mojom::CdmFactory* MediaInterfaceProxy::GetCdmFactory(
+   std::unique_ptr<CdmInfo> cdm_info =
+       KeySystemSupportImpl::GetCdmInfoForKeySystem(key_system);
+   if (!cdm_info) {
++    LOG(ERROR) << "BSC]] No valid CdmInfo for " << key_system;
+     NOTREACHED() << "No valid CdmInfo for " << key_system;
+     return nullptr;
+   }
+   if (cdm_info->path.empty()) {
++    LOG(ERROR) << "BSC]] CDM path for " << key_system << " is empty.";
+     NOTREACHED() << "CDM path for " << key_system << " is empty.";
+     return nullptr;
+   }
+   if (!base::IsValidGUID(cdm_info->guid)) {
++    LOG(ERROR) << "BSC]] Invalid CDM GUID " << cdm_info->guid;
+     NOTREACHED() << "Invalid CDM GUID " << cdm_info->guid;
+     return nullptr;
+   }
+   if (!CdmStorageImpl::IsValidCdmFileSystemId(cdm_info->file_system_id)) {
++    LOG(ERROR) << "BSC]] Invalid file system ID " << cdm_info->file_system_id;
+     NOTREACHED() << "Invalid file system ID " << cdm_info->file_system_id;
+     return nullptr;
+   }
+@@ -331,7 +338,7 @@ media::mojom::CdmFactory* MediaInterfaceProxy::ConnectToCdmService(
+     const std::string& cdm_guid,
+     const base::FilePath& cdm_path,
+     const std::string& cdm_file_system_id) {
+-  DVLOG(1) << __func__ << ": cdm_guid = " << cdm_guid;
++  LOG(ERROR) << __func__ << ": cdm_guid = " << cdm_guid;
+ 
+   DCHECK(!cdm_factory_map_.count(cdm_guid));
+   service_manager::Identity identity(media::mojom::kCdmServiceName,
+@@ -354,6 +361,7 @@ media::mojom::CdmFactory* MediaInterfaceProxy::ConnectToCdmService(
+ 
+   cdm_service->LoadCdm(cdm_path, std::move(token_provider_ptr));
+ #else
++  LOG(ERROR) << "BSC]] calling cdm_service->LoadCdm";
+   cdm_service->LoadCdm(cdm_path);
+ #endif  // defined(OS_MACOSX)
+ 

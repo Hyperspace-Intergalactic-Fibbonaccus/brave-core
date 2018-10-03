@@ -1,0 +1,42 @@
+diff --git a/chrome/common/chrome_content_client.cc b/chrome/common/chrome_content_client.cc
+index 47eea6d5c75b7e90aa6face0d5c5b3fa399f30fd..83fe4980f85654243b845d448124c4bae4c128f4 100644
+--- a/chrome/common/chrome_content_client.cc
++++ b/chrome/common/chrome_content_client.cc
+@@ -526,11 +526,15 @@ void ChromeContentClient::AddPepperPlugins(
+ void ChromeContentClient::AddContentDecryptionModules(
+     std::vector<content::CdmInfo>* cdms,
+     std::vector<media::CdmHostFilePath>* cdm_host_file_paths) {
++
++  LOG(ERROR) << "ChromeContentClient::AddContentDecryptionModules 1";
+   if (cdms) {
+ #if defined(WIDEVINE_CDM_AVAILABLE_NOT_COMPONENT)
++    LOG(ERROR) << "ChromeContentClient::AddContentDecryptionModules 2 - WIDEVINE_CDM_AVAILABLE_NOT_COMPONENT";
+     base::FilePath cdm_path;
+     content::CdmCapability capability;
+     if (IsWidevineAvailable(&cdm_path, &capability)) {
++      LOG(ERROR) << "ChromeContentClient::AddContentDecryptionModules 3 - widevine is available";
+       const base::Version version(WIDEVINE_CDM_VERSION_STRING);
+       DCHECK(version.IsValid());
+ 
+@@ -547,6 +551,7 @@ void ChromeContentClient::AddContentDecryptionModules(
+     base::FilePath clear_key_cdm_path =
+         command_line->GetSwitchValuePath(switches::kClearKeyCdmPathForTesting);
+     if (!clear_key_cdm_path.empty() && base::PathExists(clear_key_cdm_path)) {
++      LOG(ERROR) << "ChromeContentClient::AddContentDecryptionModules 4 - ENABLE_LIBRARY_CDMS true and path exists";
+       // TODO(crbug.com/764480): Remove these after we have a central place for
+       // External Clear Key (ECK) related information.
+       // Normal External Clear Key key system.
+@@ -583,8 +588,12 @@ void ChromeContentClient::AddContentDecryptionModules(
+   }
+ 
+ #if BUILDFLAG(ENABLE_CDM_HOST_VERIFICATION)
+-  if (cdm_host_file_paths)
++  if (cdm_host_file_paths) {
++    LOG(ERROR) << "ChromeContentClient::AddContentDecryptionModules 5 - ENABLE_CDM_HOST_VERIFICATION";
+     AddCdmHostFilePaths(cdm_host_file_paths);
++  } else {
++    LOG(ERROR) << "ChromeContentClient::AddContentDecryptionModules 6 - ENABLE_CDM_HOST_VERIFICATION SKIPPED";
++  }
+ #endif
+ }
+ 

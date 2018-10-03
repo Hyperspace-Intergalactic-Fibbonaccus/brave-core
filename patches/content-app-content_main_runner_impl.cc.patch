@@ -1,0 +1,12 @@
+diff --git a/content/app/content_main_runner_impl.cc b/content/app/content_main_runner_impl.cc
+index 61ef09f69587d68109db397aca17b2a0f89a8af6..a833482cbd8b39a80fa233dba3447b444a211fcd 100644
+--- a/content/app/content_main_runner_impl.cc
++++ b/content/app/content_main_runner_impl.cc
+@@ -324,6 +324,7 @@ void PreloadPepperPlugins() {
+ // the zygote on Linux to get access to the CDMs before entering the sandbox.
+ void PreloadLibraryCdms() {
+   std::vector<CdmInfo> cdms;
++  LOG(ERROR) << "BSC]] PreloadLibraryCdms";
+   GetContentClient()->AddContentDecryptionModules(&cdms, nullptr);
+   for (const auto& cdm : cdms) {
+     base::NativeLibraryLoadError error;

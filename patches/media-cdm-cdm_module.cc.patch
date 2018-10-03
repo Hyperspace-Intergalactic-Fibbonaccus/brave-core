@@ -1,0 +1,32 @@
+diff --git a/media/cdm/cdm_module.cc b/media/cdm/cdm_module.cc
+index c0ec7a7255d96003c7c10c4f3b00cb99bebfe8ae..b94a1fdea09686cbc02f735b405132b3a505a43c 100644
+--- a/media/cdm/cdm_module.cc
++++ b/media/cdm/cdm_module.cc
+@@ -33,8 +33,8 @@ void InitCdmHostVerification(
+     base::NativeLibrary cdm_library,
+     const base::FilePath& cdm_path,
+     const std::vector<CdmHostFilePath>& cdm_host_file_paths) {
++  LOG(ERROR) << "BSC]] InitCdmHostVerification";
+   DCHECK(cdm_library);
+-
+   CdmHostFiles cdm_host_files;
+   cdm_host_files.Initialize(cdm_path, cdm_host_file_paths);
+ 
+@@ -120,7 +120,7 @@ bool CdmModule::Initialize(const base::FilePath& cdm_path,
+ #else
+ bool CdmModule::Initialize(const base::FilePath& cdm_path) {
+ #endif  // BUILDFLAG(ENABLE_CDM_HOST_VERIFICATION)
+-  DVLOG(1) << __func__ << ": cdm_path = " << cdm_path.value();
++  LOG(ERROR) << __func__ << ": cdm_path = " << cdm_path.value();
+ 
+   DCHECK(!was_initialize_called_);
+   was_initialize_called_ = true;
+@@ -169,7 +169,7 @@ bool CdmModule::Initialize(const base::FilePath& cdm_path) {
+ 
+   // In case of crashes, provide CDM version to facilitate investigation.
+   std::string cdm_version = get_cdm_version_func_();
+-  DVLOG(2) << __func__ << ": cdm_version = " << cdm_version;
++  LOG(ERROR) << __func__ << ": cdm_version = " << cdm_version;
+ 
+   static crash_reporter::CrashKeyString<32> cdm_version_key("cdm-version");
+   cdm_version_key.Set(cdm_version);

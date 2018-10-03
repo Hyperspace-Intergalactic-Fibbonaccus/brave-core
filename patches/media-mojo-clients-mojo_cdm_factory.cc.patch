@@ -1,0 +1,13 @@
+diff --git a/media/mojo/clients/mojo_cdm_factory.cc b/media/mojo/clients/mojo_cdm_factory.cc
+index 18fa3abf81b269423902db0d7a2ae64d4aab2dbb..28d693164b33f2a7c28a2fb419de2d4b73d75e79 100644
+--- a/media/mojo/clients/mojo_cdm_factory.cc
++++ b/media/mojo/clients/mojo_cdm_factory.cc
+@@ -36,7 +36,7 @@ void MojoCdmFactory::Create(
+     const SessionKeysChangeCB& session_keys_change_cb,
+     const SessionExpirationUpdateCB& session_expiration_update_cb,
+     const CdmCreatedCB& cdm_created_cb) {
+-  DVLOG(2) << __func__ << ": " << key_system;
++  LOG(ERROR) << __func__ << ": " << key_system;
+ 
+   if (security_origin.unique()) {
+     base::ThreadTaskRunnerHandle::Get()->PostTask(

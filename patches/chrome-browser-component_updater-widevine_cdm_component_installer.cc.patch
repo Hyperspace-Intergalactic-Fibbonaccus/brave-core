@@ -1,0 +1,15 @@
+diff --git a/chrome/browser/component_updater/widevine_cdm_component_installer.cc b/chrome/browser/component_updater/widevine_cdm_component_installer.cc
+index 3ba612a95fb479fac0d2801100f2887ff71039d9..42f4daf90e881c72b75cb1224bed4170d7f06230 100644
+--- a/chrome/browser/component_updater/widevine_cdm_component_installer.cc
++++ b/chrome/browser/component_updater/widevine_cdm_component_installer.cc
+@@ -374,6 +374,10 @@ void RegisterWidevineCdmWithChrome(
+   const base::FilePath cdm_path =
+       GetPlatformDirectory(cdm_install_dir)
+           .AppendASCII(base::GetNativeLibraryName(kWidevineCdmLibraryName));
++
++
++  LOG(ERROR) << "BSC]] RegisterWidevineCdmWithChrome: cdm_path=" << cdm_path;
++
+   CdmRegistry::GetInstance()->RegisterCdm(
+       content::CdmInfo(kWidevineCdmDisplayName, kWidevineCdmGuid, cdm_version,
+                        cdm_path, kWidevineCdmFileSystemId,

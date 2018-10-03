@@ -1,0 +1,13 @@
+diff --git a/chrome/gpu/widevine_cdm_proxy_factory.cc b/chrome/gpu/widevine_cdm_proxy_factory.cc
+index 37f92b420f8af602b80b9879ceb4243d1061949d..cb23fc1f498d3b0019ec3f9398d7ba87083bf84f 100644
+--- a/chrome/gpu/widevine_cdm_proxy_factory.cc
++++ b/chrome/gpu/widevine_cdm_proxy_factory.cc
+@@ -28,6 +28,8 @@ std::unique_ptr<media::CdmProxy> CreateWidevineCdmProxy() {
+   Microsoft::WRL::ComPtr<ID3D11Device> device;
+   Microsoft::WRL::ComPtr<ID3D11VideoDevice> video_device;
+ 
++  LOG(ERROR) << "BSC]] CreateWidevineCdmProxy";
++
+   // D3D11CdmProxy requires D3D_FEATURE_LEVEL_11_1.
+   const D3D_FEATURE_LEVEL feature_levels[] = {D3D_FEATURE_LEVEL_11_1};
+ 

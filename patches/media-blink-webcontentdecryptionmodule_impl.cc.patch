@@ -1,0 +1,43 @@
+diff --git a/media/blink/webcontentdecryptionmodule_impl.cc b/media/blink/webcontentdecryptionmodule_impl.cc
+index 9c80d9a02c6c8c03f2935e12dfd3fafd717bfcd0..d6aecccb0c1abee24429705bda59f4e717219afb 100644
+--- a/media/blink/webcontentdecryptionmodule_impl.cc
++++ b/media/blink/webcontentdecryptionmodule_impl.cc
+@@ -68,12 +68,14 @@ void WebContentDecryptionModuleImpl::Create(
+     const blink::WebSecurityOrigin& security_origin,
+     const CdmConfig& cdm_config,
+     std::unique_ptr<blink::WebContentDecryptionModuleResult> result) {
++  LOG(ERROR) << "BSC]] WebContentDecryptionModuleImpl::Create 1";
+   DCHECK(!security_origin.IsNull());
+   DCHECK(!key_system.empty());
+ 
+   // TODO(ddorwin): Guard against this in supported types check and remove this.
+   // Chromium only supports ASCII key systems.
+   if (!base::IsStringASCII(key_system)) {
++    LOG(ERROR) << "BSC]] WebContentDecryptionModuleImpl::Create 2 - invalid keysystem";
+     NOTREACHED();
+     result->CompleteWithError(
+         blink::kWebContentDecryptionModuleExceptionNotSupportedError, 0,
+@@ -85,6 +87,7 @@ void WebContentDecryptionModuleImpl::Create(
+   std::string key_system_ascii = base::UTF16ToASCII(key_system);
+   if (!media::KeySystems::GetInstance()->IsSupportedKeySystem(
+           key_system_ascii)) {
++    LOG(ERROR) << "BSC]] WebContentDecryptionModuleImpl::Create 3 - KeySystem not supported";
+     std::string message =
+         "Keysystem '" + key_system_ascii + "' is not supported.";
+     result->CompleteWithError(
+@@ -95,6 +98,7 @@ void WebContentDecryptionModuleImpl::Create(
+ 
+   // If unique security origin, don't try to create the CDM.
+   if (security_origin.IsUnique() || security_origin.ToString() == "null") {
++    LOG(ERROR) << "BSC]] WebContentDecryptionModuleImpl::Create 4 - EME use not allowed";
+     result->CompleteWithError(
+         blink::kWebContentDecryptionModuleExceptionNotSupportedError, 0,
+         "EME use is not allowed on unique origins.");
+@@ -106,6 +110,7 @@ void WebContentDecryptionModuleImpl::Create(
+   // |result|), it will keep a reference to |adapter|. Otherwise, |adapter| will
+   // be destructed.
+   scoped_refptr<CdmSessionAdapter> adapter(new CdmSessionAdapter());
++  LOG(ERROR) << "BSC]] WebContentDecryptionModuleImpl::Create 5";
+   adapter->CreateCdm(cdm_factory, key_system_ascii, security_origin, cdm_config,
+                      std::move(result));
+ }

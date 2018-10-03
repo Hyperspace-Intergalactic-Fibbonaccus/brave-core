@@ -1,0 +1,27 @@
+diff --git a/media/cdm/library_cdm/clear_key_cdm/cdm_file_adapter.cc b/media/cdm/library_cdm/clear_key_cdm/cdm_file_adapter.cc
+index 33994ad8aa046387f47b6cd58205ad68c49c2a03..671a0a99f682bb20c04d4bc5aaa621d82091ea26 100644
+--- a/media/cdm/library_cdm/clear_key_cdm/cdm_file_adapter.cc
++++ b/media/cdm/library_cdm/clear_key_cdm/cdm_file_adapter.cc
+@@ -42,19 +42,19 @@ CdmFileAdapter::~CdmFileAdapter() {
+ }
+ 
+ void CdmFileAdapter::Open(const std::string& name, FileOpenedCB open_cb) {
+-  DVLOG(2) << __func__;
++  LOG(ERROR) << __func__;
+   open_cb_ = std::move(open_cb);
+   file_io_->Open(name.data(), name.length());
+ }
+ 
+ void CdmFileAdapter::Read(ReadCB read_cb) {
+-  DVLOG(2) << __func__;
++  LOG(ERROR) << __func__;
+   read_cb_ = std::move(read_cb);
+   file_io_->Read();
+ }
+ 
+ void CdmFileAdapter::Write(const std::vector<uint8_t>& data, WriteCB write_cb) {
+-  DVLOG(2) << __func__;
++  LOG(ERROR) << __func__;
+   write_cb_ = std::move(write_cb);
+   file_io_->Write(data.data(), data.size());
+ }

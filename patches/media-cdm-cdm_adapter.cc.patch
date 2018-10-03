@@ -1,0 +1,45 @@
+diff --git a/media/cdm/cdm_adapter.cc b/media/cdm/cdm_adapter.cc
+index c2bad3057e7dd7a1ae3c401df62f016550a2c5b6..2265995daf88f8d0fd795107edff3c8f85ca3a02 100644
+--- a/media/cdm/cdm_adapter.cc
++++ b/media/cdm/cdm_adapter.cc
+@@ -480,6 +480,8 @@ void CdmAdapter::Create(
+   DCHECK(!session_keys_change_cb.is_null());
+   DCHECK(!session_expiration_update_cb.is_null());
+ 
++  LOG(ERROR) << "BSC]] CdmAdapter::Create";
++
+   scoped_refptr<CdmAdapter> cdm =
+       new CdmAdapter(key_system, security_origin, cdm_config, create_cdm_func,
+                      std::move(helper), session_message_cb, session_closed_cb,
+@@ -542,7 +544,7 @@ CdmWrapper* CdmAdapter::CreateCdmInstance(const std::string& key_system) {
+ 
+   CdmWrapper* cdm = CdmWrapper::Create(create_cdm_func_, key_system.data(),
+                                        key_system.size(), GetCdmHost, this);
+-  DVLOG(1) << "CDM instance for " + key_system + (cdm ? "" : " could not be") +
++  LOG(ERROR) << "CDM instance for " + key_system + (cdm ? "" : " could not be") +
+                   " created.";
+ 
+   if (cdm) {
+@@ -557,12 +559,13 @@ CdmWrapper* CdmAdapter::CreateCdmInstance(const std::string& key_system) {
+ }
+ 
+ void CdmAdapter::Initialize(std::unique_ptr<media::SimpleCdmPromise> promise) {
+-  DVLOG(1) << __func__;
++  LOG(ERROR) << __func__;
+ 
+   cdm_.reset(CreateCdmInstance(key_system_));
+   if (!cdm_) {
+     promise->reject(CdmPromise::Exception::INVALID_STATE_ERROR, 0,
+                     "Unable to create CDM.");
++    LOG(ERROR) << "BSC]] failed CreateCdmInstance";
+     return;
+   }
+ 
+@@ -571,6 +574,7 @@ void CdmAdapter::Initialize(std::unique_ptr<media::SimpleCdmPromise> promise) {
+   if (!cdm_->Initialize(cdm_config_.allow_distinctive_identifier,
+                         cdm_config_.allow_persistent_state,
+                         cdm_config_.use_hw_secure_codecs)) {
++    LOG(ERROR) << "BSC]] Initialize returned falsey";
+     // OnInitialized() will not be called by the CDM, which is the case for
+     // CDM interfaces prior to CDM_10.
+     OnInitialized(true);

@@ -1,0 +1,12 @@
+diff --git a/content/utility/utility_service_factory.cc b/content/utility/utility_service_factory.cc
+index aa667ddec9d4c440ab334340da05b736fda0a2e2..c54f5c974344d9441e0aeb6f17d31b2acea8a97f 100644
+--- a/content/utility/utility_service_factory.cc
++++ b/content/utility/utility_service_factory.cc
+@@ -95,6 +95,7 @@ class ContentCdmServiceClient final : public media::CdmService::Client {
+ #if BUILDFLAG(ENABLE_CDM_HOST_VERIFICATION)
+   void AddCdmHostFilePaths(
+       std::vector<media::CdmHostFilePath>* cdm_host_file_paths) override {
++    LOG(ERROR) << "BSC]] ContentCdmServiceClient::AddCdmHostFilePaths";
+     GetContentClient()->AddContentDecryptionModules(nullptr,
+                                                     cdm_host_file_paths);
+   }

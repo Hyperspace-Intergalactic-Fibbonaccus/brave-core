@@ -1,0 +1,12 @@
+diff --git a/content/renderer/media/media_interface_factory.cc b/content/renderer/media/media_interface_factory.cc
+index f457c3854d8a95c29c3b1de5b811cb72b7ad6c6c..e96fe477ef89400457a82fbda78eea0febc4adb9 100644
+--- a/content/renderer/media/media_interface_factory.cc
++++ b/content/renderer/media/media_interface_factory.cc
+@@ -71,6 +71,7 @@ void MediaInterfaceFactory::CreateRenderer(
+ void MediaInterfaceFactory::CreateCdm(
+     const std::string& key_system,
+     media::mojom::ContentDecryptionModuleRequest request) {
++  LOG(ERROR) << "BSC]] MediaInterfaceFactory::CreateCdm";
+   if (!task_runner_->BelongsToCurrentThread()) {
+     task_runner_->PostTask(
+         FROM_HERE, base::BindOnce(&MediaInterfaceFactory::CreateCdm, weak_this_,

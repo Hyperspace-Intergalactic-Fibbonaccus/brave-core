@@ -1,0 +1,40 @@
+diff --git a/media/cdm/cdm_host_files.cc b/media/cdm/cdm_host_files.cc
+index b2cd04dd787bdea6559a9fc5caeec9a0d746ed7f..cf38ca86d71f394661365bb6f75385044bb3d367 100644
+--- a/media/cdm/cdm_host_files.cc
++++ b/media/cdm/cdm_host_files.cc
+@@ -54,9 +54,13 @@ void CdmHostFiles::Initialize(
+ 
+ CdmHostFiles::Status CdmHostFiles::InitVerification(
+     base::NativeLibrary cdm_library) {
++  LOG(ERROR) << "BSC]] CdmHostFiles::InitVerification 1";
++
+   DVLOG(1) << __func__;
+   DCHECK(cdm_library);
+ 
++  LOG(ERROR) << "BSC]] CdmHostFiles::InitVerification 2";
++
+   // Get function pointer exported by the CDM.
+   // See media/cdm/api/content_decryption_module_ext.h.
+   using InitVerificationFunc =
+@@ -84,16 +88,16 @@ CdmHostFiles::Status CdmHostFiles::InitVerification(
+   // Call |init_verification_func| on the CDM with |cdm_host_files|. Note that
+   // the ownership of these files are transferred to the CDM, which will close
+   // the files immediately after use.
+-  DVLOG(1) << __func__ << ": Calling " << kInitVerificationFuncName
++  LOG(ERROR) << __func__ << ": Calling " << kInitVerificationFuncName
+            << "() with " << cdm_host_files.size() << " files.";
+   for (const auto& host_file : cdm_host_files) {
+-    DVLOG(1) << " - File Path: " << host_file.file_path;
+-    DVLOG(1) << " - File: " << host_file.file;
+-    DVLOG(1) << " - Sig File: " << host_file.sig_file;
++    LOG(ERROR) << " - File Path: " << host_file.file_path;
++    LOG(ERROR) << " - File: " << host_file.file;
++    LOG(ERROR) << " - Sig File: " << host_file.sig_file;
+   }
+ 
+   if (!init_verification_func(cdm_host_files_ptr, cdm_host_files.size())) {
+-    DVLOG(1) << "Failed to verify CDM host.";
++    LOG(ERROR) << "Failed to verify CDM host.";
+     CloseAllFiles();
+     return Status::kInitVerificationFailed;
+   }
