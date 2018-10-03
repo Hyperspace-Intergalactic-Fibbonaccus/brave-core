@@ -171,6 +171,24 @@ export class Panel extends React.Component<Props, State> {
     })
   }
 
+  showDonateToSiteDetail = () => {
+    const publisher: RewardsExtension.Publisher | undefined = this.getPublisher()
+    // TODO: why do we store windowId instead of active tab id in state?
+    chrome.tabs.query({
+      active: true,
+      windowId: chrome.windows.WINDOW_ID_CURRENT
+    }, (tabs) => {
+      if (!tabs || !tabs.length) {
+        return
+      }
+      const tabId = tabs[0].id
+      if (tabId === undefined) {
+        return
+      }
+      chrome.braveRewards.donateToSite(tabId, publisher ? publisher.publisher_key : 'Test Publsher')
+    })
+  }
+
   render () {
     const { balance, rates, grants } = this.props.rewardsPanelData.walletProperties
     const publisher: RewardsExtension.Publisher | undefined = this.getPublisher()
@@ -200,6 +218,7 @@ export class Panel extends React.Component<Props, State> {
         connectedWallet={false}
         grants={this.getGrants(grants)}
       >
+        <button onClick={this.showDonateToSiteDetail}>Donate</button>
         <WalletSummarySlider
           id={'panel-slider'}
           onToggle={this.onSliderToggle}
@@ -220,7 +239,7 @@ export class Panel extends React.Component<Props, State> {
                 [5, 10, 15, 20, 30, 50, 100]
               }
               onToggleTips={this.doNothing}
-              donationAction={this.doNothing}
+              donationAction={this.showDonateToSiteDetail}
               onAmountChange={this.doNothing}
               onIncludeInAuto={this.doNothing}
             />
