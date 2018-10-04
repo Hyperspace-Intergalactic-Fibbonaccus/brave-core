@@ -139,32 +139,32 @@
             "type": "object",
             "properties": {
               "openingBalance": {
-                "type": "double",
-                "description": "balance defined in BAT"
+                "type": "string",
+                "description": "balance defined in probi"
               },
               "closingBalance": {
-                "type": "double",
-                "description": "balance defined in BAT"
+                "type": "string",
+                "description": "balance defined in probi"
               },
               "grants": {
-                "type": "double",
-                "description": "balance defined in BAT"
+                "type": "string",
+                "description": "balance defined in probi"
               },
               "earningFromAds": {
-                "type": "double",
-                "description": "balance defined in BAT"
+                "type": "string",
+                "description": "balance defined in probi"
               },
               "autoContribute": {
-                "type": "double",
-                "description": "balance defined in BAT"
+                "type": "string",
+                "description": "balance defined in probi"
               },
               "recurringDonation": {
-                "type": "double",
-                "description": "balance defined in BAT"
+                "type": "string",
+                "description": "balance defined in probi"
               },
               "oneTimeDonation": {
-                "type": "double",
-                "description": "balance defined in BAT"
+                "type": "string",
+                "description": "balance defined in probi"
               }
             }
           }
