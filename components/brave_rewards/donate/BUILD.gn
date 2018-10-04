@@ -2,8 +2,14 @@ import("//brave/components/common/typescript.gni")
 
 transpile_web_ui("donate") {
   inputs = [
-    "donate.js",
-    "donate.html",
+    "actions/donate_actions.ts",
+    "brave_donate.html",
+    "brave_donate.tsx",
+    "components/app.tsx",
+    "constants/donate_types.ts",
+    "reducers/donate_reducer.ts",
+    "reducers/index.ts",
+    "store.ts",
   ]
 
   bundle_names = ["brave_donate.bundle.js"]
