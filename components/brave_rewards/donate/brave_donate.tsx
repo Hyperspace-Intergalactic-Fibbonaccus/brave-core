@@ -59,7 +59,7 @@ window.cr.define('brave_rewards_donate', function () {
     return actions
   }
 
-  function onPublisherDonateData(data: RewardsDonate.Publisher) {
+  function onPublisherDonateData (data: RewardsDonate.Publisher) {
     getActions().onPublisherDonateData(data)
   }
 
