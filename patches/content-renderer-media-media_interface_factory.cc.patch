@@ -1,5 +1,5 @@
 diff --git a/content/renderer/media/media_interface_factory.cc b/content/renderer/media/media_interface_factory.cc
-index f457c3854d8a95c29c3b1de5b811cb72b7ad6c6c..53ff77736401d60a9eb7e7f874b100ac57b31b5d 100644
+index f457c3854d8a95c29c3b1de5b811cb72b7ad6c6c..f8717420ca64183194278cdaa22a70eaa179cdaa 100644
 --- a/content/renderer/media/media_interface_factory.cc
 +++ b/content/renderer/media/media_interface_factory.cc
 @@ -71,6 +71,7 @@ void MediaInterfaceFactory::CreateRenderer(
@@ -15,7 +15,7 @@ index f457c3854d8a95c29c3b1de5b811cb72b7ad6c6c..53ff77736401d60a9eb7e7f874b100ac
  media::mojom::InterfaceFactory*
  MediaInterfaceFactory::GetMediaInterfaceFactory() {
 -  DVLOG(1) << __func__;
-+  LOG(ERROR) "BSC]] " << __func__;
++  LOG(ERROR) << "BSC]] " << __func__;
    DCHECK(task_runner_->BelongsToCurrentThread());
  
    if (!media_interface_factory_) {
