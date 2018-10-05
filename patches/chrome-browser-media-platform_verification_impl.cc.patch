@@ -1,0 +1,58 @@
+diff --git a/chrome/browser/media/platform_verification_impl.cc b/chrome/browser/media/platform_verification_impl.cc
+index c687fd6774bbb1550a005630a19dfb471d93c193..476e456551eb8f16067d3d2d22718c484bbae434 100644
+--- a/chrome/browser/media/platform_verification_impl.cc
++++ b/chrome/browser/media/platform_verification_impl.cc
+@@ -44,7 +44,7 @@ std::vector<uint8_t> GetStorageIdSaltFromProfile(
+ void PlatformVerificationImpl::Create(
+     content::RenderFrameHost* render_frame_host,
+     media::mojom::PlatformVerificationRequest request) {
+-  DVLOG(2) << __func__;
++  LOG(ERROR) << "BSC]] " << __func__;
+   DCHECK(render_frame_host);
+ 
+   // PlatformVerificationFlow requires to run on the UI thread.
+@@ -70,7 +70,7 @@ void PlatformVerificationImpl::ChallengePlatform(
+     const std::string& service_id,
+     const std::string& challenge,
+     ChallengePlatformCallback callback) {
+-  DVLOG(2) << __func__;
++  LOG(ERROR) << "BSC]] " << __func__;
+   DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
+ 
+ // TODO(crbug.com/676224). This should be commented out at the mojom
+@@ -98,7 +98,7 @@ void PlatformVerificationImpl::OnPlatformChallenged(
+     const std::string& signed_data,
+     const std::string& signature,
+     const std::string& platform_key_certificate) {
+-  DVLOG(2) << __func__ << ": " << result;
++  LOG(ERROR) << "BSC]] " << __func__ << ": " << result;
+   DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
+ 
+   if (result != chromeos::attestation::PlatformVerificationFlow::SUCCESS) {
+@@ -120,7 +120,7 @@ void PlatformVerificationImpl::OnPlatformChallenged(
+ 
+ void PlatformVerificationImpl::GetStorageId(uint32_t version,
+                                             GetStorageIdCallback callback) {
+-  DVLOG(2) << __func__ << " version: " << version;
++  LOG(ERROR) << "BSC]] " << __func__ << " version: " << version;
+   DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
+ 
+ // TODO(crbug.com/676224). This should be commented out at the mojom
+@@ -139,7 +139,7 @@ void PlatformVerificationImpl::GetStorageId(uint32_t version,
+ #endif  // BUILDFLAG(ENABLE_CDM_STORAGE_ID)
+ 
+   // Version not supported, so no Storage Id to return.
+-  DVLOG(2) << __func__ << " not supported";
++  LOG(ERROR) << "BSC]] " << __func__ << " not supported";
+   std::move(callback).Run(version, std::vector<uint8_t>());
+ }
+ 
+@@ -147,7 +147,7 @@ void PlatformVerificationImpl::GetStorageId(uint32_t version,
+ void PlatformVerificationImpl::OnStorageIdResponse(
+     GetStorageIdCallback callback,
+     const std::vector<uint8_t>& storage_id) {
+-  DVLOG(2) << __func__ << " version: " << kCurrentStorageIdVersion
++  LOG(ERROR) << "BSC]] " << __func__ << " version: " << kCurrentStorageIdVersion
+            << ", size: " << storage_id.size();
+ 
+   std::move(callback).Run(kCurrentStorageIdVersion, storage_id);

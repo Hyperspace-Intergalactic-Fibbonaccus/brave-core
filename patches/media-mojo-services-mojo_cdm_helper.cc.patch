@@ -1,0 +1,118 @@
+diff --git a/media/mojo/services/mojo_cdm_helper.cc b/media/mojo/services/mojo_cdm_helper.cc
+index 36c3c5e7cc0143a80bedb05327775c58200b651c..b59387aebd66d991d7540d182cccdcbe0ec95f5d 100644
+--- a/media/mojo/services/mojo_cdm_helper.cc
++++ b/media/mojo/services/mojo_cdm_helper.cc
+@@ -21,10 +21,12 @@ MojoCdmHelper::MojoCdmHelper(
+ MojoCdmHelper::~MojoCdmHelper() = default;
+ 
+ void MojoCdmHelper::SetFileReadCB(FileReadCB file_read_cb) {
++  LOG(ERROR) << "BSC]] MojoCdmHelper::" << __func__;
+   file_read_cb_ = std::move(file_read_cb);
+ }
+ 
+ cdm::FileIO* MojoCdmHelper::CreateCdmFileIO(cdm::FileIOClient* client) {
++  LOG(ERROR) << "BSC]] MojoCdmHelper::" << __func__;
+   ConnectToCdmStorage();
+ 
+   // Pass a reference to CdmStorage so that MojoCdmFileIO can open a file.
+@@ -39,6 +41,7 @@ cdm::FileIO* MojoCdmHelper::CreateCdmFileIO(cdm::FileIOClient* client) {
+ }
+ 
+ cdm::CdmProxy* MojoCdmHelper::CreateCdmProxy(cdm::CdmProxyClient* client) {
++  LOG(ERROR) << "BSC]] MojoCdmHelper::" << __func__;
+   DVLOG(3) << __func__;
+ 
+   if (cdm_proxy_) {
+@@ -54,18 +57,22 @@ cdm::CdmProxy* MojoCdmHelper::CreateCdmProxy(cdm::CdmProxyClient* client) {
+ }
+ 
+ int MojoCdmHelper::GetCdmProxyCdmId() {
++  LOG(ERROR) << "BSC]] MojoCdmHelper::" << __func__;
+   return cdm_proxy_ ? cdm_proxy_->GetCdmId() : CdmContext::kInvalidCdmId;
+ }
+ 
+ cdm::Buffer* MojoCdmHelper::CreateCdmBuffer(size_t capacity) {
++  LOG(ERROR) << "BSC]] MojoCdmHelper::" << __func__;
+   return GetAllocator()->CreateCdmBuffer(capacity);
+ }
+ 
+ std::unique_ptr<VideoFrameImpl> MojoCdmHelper::CreateCdmVideoFrame() {
++  LOG(ERROR) << "BSC]] MojoCdmHelper::" << __func__;
+   return GetAllocator()->CreateCdmVideoFrame();
+ }
+ 
+ void MojoCdmHelper::QueryStatus(QueryStatusCB callback) {
++  LOG(ERROR) << "BSC]] MojoCdmHelper::" << __func__;
+   QueryStatusCB scoped_callback = mojo::WrapCallbackWithDefaultInvokeIfNotRun(
+       std::move(callback), false, 0, 0);
+   ConnectToOutputProtection();
+@@ -74,6 +81,7 @@ void MojoCdmHelper::QueryStatus(QueryStatusCB callback) {
+ 
+ void MojoCdmHelper::EnableProtection(uint32_t desired_protection_mask,
+                                      EnableProtectionCB callback) {
++  LOG(ERROR) << "BSC]] MojoCdmHelper::" << __func__;
+   EnableProtectionCB scoped_callback =
+       mojo::WrapCallbackWithDefaultInvokeIfNotRun(std::move(callback), false);
+   ConnectToOutputProtection();
+@@ -84,6 +92,7 @@ void MojoCdmHelper::EnableProtection(uint32_t desired_protection_mask,
+ void MojoCdmHelper::ChallengePlatform(const std::string& service_id,
+                                       const std::string& challenge,
+                                       ChallengePlatformCB callback) {
++  LOG(ERROR) << "BSC]] MojoCdmHelper::" << __func__;
+   ChallengePlatformCB scoped_callback =
+       mojo::WrapCallbackWithDefaultInvokeIfNotRun(std::move(callback), false,
+                                                   "", "", "");
+@@ -93,6 +102,7 @@ void MojoCdmHelper::ChallengePlatform(const std::string& service_id,
+ }
+ 
+ void MojoCdmHelper::GetStorageId(uint32_t version, StorageIdCB callback) {
++  LOG(ERROR) << "BSC]] MojoCdmHelper::" << __func__;
+   StorageIdCB scoped_callback = mojo::WrapCallbackWithDefaultInvokeIfNotRun(
+       std::move(callback), version, std::vector<uint8_t>());
+   ConnectToPlatformVerification();
+@@ -100,6 +110,7 @@ void MojoCdmHelper::GetStorageId(uint32_t version, StorageIdCB callback) {
+ }
+ 
+ void MojoCdmHelper::CloseCdmFileIO(MojoCdmFileIO* cdm_file_io) {
++  LOG(ERROR) << "BSC]] MojoCdmHelper::" << __func__;
+   DVLOG(3) << __func__ << ": cdm_file_io = " << cdm_file_io;
+   base::EraseIf(cdm_file_io_set_,
+                 [cdm_file_io](const std::unique_ptr<MojoCdmFileIO>& ptr) {
+@@ -108,12 +119,14 @@ void MojoCdmHelper::CloseCdmFileIO(MojoCdmFileIO* cdm_file_io) {
+ }
+ 
+ void MojoCdmHelper::ReportFileReadSize(int file_size_bytes) {
++  LOG(ERROR) << "BSC]] MojoCdmHelper::" << __func__;
+   DVLOG(3) << __func__ << ": file_size_bytes = " << file_size_bytes;
+   if (file_read_cb_)
+     file_read_cb_.Run(file_size_bytes);
+ }
+ 
+ void MojoCdmHelper::ConnectToCdmStorage() {
++  LOG(ERROR) << "BSC]] MojoCdmHelper::" << __func__;
+   if (!cdm_storage_ptr_) {
+     service_manager::GetInterface<mojom::CdmStorage>(interface_provider_,
+                                                      &cdm_storage_ptr_);
+@@ -121,12 +134,14 @@ void MojoCdmHelper::ConnectToCdmStorage() {
+ }
+ 
+ CdmAllocator* MojoCdmHelper::GetAllocator() {
++  LOG(ERROR) << "BSC]] MojoCdmHelper::" << __func__;
+   if (!allocator_)
+     allocator_ = std::make_unique<MojoCdmAllocator>();
+   return allocator_.get();
+ }
+ 
+ void MojoCdmHelper::ConnectToOutputProtection() {
++  LOG(ERROR) << "BSC]] MojoCdmHelper::" << __func__;
+   if (!output_protection_ptr_) {
+     service_manager::GetInterface<mojom::OutputProtection>(
+         interface_provider_, &output_protection_ptr_);
+@@ -134,6 +149,7 @@ void MojoCdmHelper::ConnectToOutputProtection() {
+ }
+ 
+ void MojoCdmHelper::ConnectToPlatformVerification() {
++  LOG(ERROR) << "BSC]] MojoCdmHelper::" << __func__;
+   if (!platform_verification_ptr_) {
+     service_manager::GetInterface<mojom::PlatformVerification>(
+         interface_provider_, &platform_verification_ptr_);

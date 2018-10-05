@@ -1,0 +1,107 @@
+diff --git a/media/mojo/services/mojo_cdm_file_io.cc b/media/mojo/services/mojo_cdm_file_io.cc
+index d5df66083ce595fc6933ce510121f99bbee507b6..35de7012a60e136ee5fb72ff09dcacd58f407476 100644
+--- a/media/mojo/services/mojo_cdm_file_io.cc
++++ b/media/mojo/services/mojo_cdm_file_io.cc
+@@ -55,19 +55,19 @@ MojoCdmFileIO::MojoCdmFileIO(Delegate* delegate,
+       client_(client),
+       cdm_storage_(cdm_storage),
+       weak_factory_(this) {
+-  DVLOG(1) << __func__;
++  LOG(ERROR) << "BSC]] " << __func__;
+   DCHECK(delegate_);
+   DCHECK(client_);
+   DCHECK(cdm_storage_);
+ }
+ 
+ MojoCdmFileIO::~MojoCdmFileIO() {
+-  DVLOG(1) << __func__;
++  LOG(ERROR) << "BSC]] " << __func__;
+ }
+ 
+ void MojoCdmFileIO::Open(const char* file_name, uint32_t file_name_size) {
+   std::string file_name_string(file_name, file_name_size);
+-  DVLOG(3) << __func__ << " file: " << file_name_string;
++  LOG(ERROR) << "BSC]] " << __func__ << " file: " << file_name_string;
+ 
+   TRACE_EVENT1("media", "MojoCdmFileIO::Open", "file_name", file_name_string);
+ 
+@@ -95,7 +95,7 @@ void MojoCdmFileIO::Open(const char* file_name, uint32_t file_name_size) {
+ void MojoCdmFileIO::OnFileOpened(StorageStatus status,
+                                  base::File file,
+                                  mojom::CdmFileAssociatedPtrInfo cdm_file) {
+-  DVLOG(3) << __func__ << " file: " << file_name_ << ", status: " << status;
++  LOG(ERROR) << "BSC]] " << __func__ << " file: " << file_name_ << ", status: " << status;
+ 
+   TRACE_EVENT2("media", "MojoCdmFileIO::FileOpened", "file_name", file_name_,
+                "status", static_cast<int32_t>(status));
+@@ -131,7 +131,7 @@ void MojoCdmFileIO::OnFileOpened(StorageStatus status,
+ }
+ 
+ void MojoCdmFileIO::Read() {
+-  DVLOG(3) << __func__ << " file: " << file_name_;
++  LOG(ERROR) << "BSC]] " << __func__ << " file: " << file_name_;
+ 
+   TRACE_EVENT1("media", "MojoCdmFileIO::Read", "file_name", file_name_);
+ 
+@@ -175,7 +175,7 @@ void MojoCdmFileIO::Read() {
+ }
+ 
+ void MojoCdmFileIO::DoRead(int64_t num_bytes) {
+-  DVLOG(3) << __func__ << " file: " << file_name_;
++  LOG(ERROR) << "BSC]] " << __func__ << " file: " << file_name_;
+   DCHECK_EQ(State::kReading, state_);
+ 
+   TRACE_EVENT2("media", "MojoCdmFileIO::DoRead", "file_name", file_name_,
+@@ -200,7 +200,7 @@ void MojoCdmFileIO::DoRead(int64_t num_bytes) {
+     if (bytes_to_read != bytes_read) {
+       // Unable to read the contents of the file. Setting |state_| to kOpened
+       // so that the CDM can write something valid to this file.
+-      DVLOG(1) << "Failed to read file " << file_name_ << ". Requested "
++      LOG(ERROR) << "BSC]] " << "Failed to read file " << file_name_ << ". Requested "
+                << bytes_to_read << " bytes, got " << bytes_read;
+       state_ = State::kOpened;
+       OnError(ErrorType::kReadError);
+@@ -220,7 +220,7 @@ void MojoCdmFileIO::DoRead(int64_t num_bytes) {
+ }
+ 
+ void MojoCdmFileIO::Write(const uint8_t* data, uint32_t data_size) {
+-  DVLOG(3) << __func__ << " file: " << file_name_ << ", bytes: " << data_size;
++  LOG(ERROR) << "BSC]] " << __func__ << " file: " << file_name_ << ", bytes: " << data_size;
+ 
+   TRACE_EVENT1("media", "MojoCdmFileIO::Write", "file_name", file_name_);
+ 
+@@ -255,7 +255,7 @@ void MojoCdmFileIO::Write(const uint8_t* data, uint32_t data_size) {
+ 
+ void MojoCdmFileIO::DoWrite(const std::vector<uint8_t>& data,
+                             base::File temporary_file) {
+-  DVLOG(3) << __func__ << " file: " << file_name_ << ", result: "
++  LOG(ERROR) << "BSC]] " << __func__ << " file: " << file_name_ << ", result: "
+            << base::File::ErrorToString(temporary_file.error_details());
+   DCHECK_EQ(State::kWriting, state_);
+ 
+@@ -299,7 +299,7 @@ void MojoCdmFileIO::DoWrite(const std::vector<uint8_t>& data,
+ }
+ 
+ void MojoCdmFileIO::OnWriteCommitted(base::File reopened_file) {
+-  DVLOG(3) << __func__ << " file: " << file_name_;
++  LOG(ERROR) << "BSC]] " << __func__ << " file: " << file_name_;
+   DCHECK_EQ(State::kWriting, state_);
+   DCHECK(!file_for_reading_.IsValid()) << "Original file was not closed.";
+ 
+@@ -318,14 +318,14 @@ void MojoCdmFileIO::OnWriteCommitted(base::File reopened_file) {
+ }
+ 
+ void MojoCdmFileIO::Close() {
+-  DVLOG(3) << __func__ << " file: " << file_name_;
++  LOG(ERROR) << "BSC]] " << __func__ << " file: " << file_name_;
+ 
+   // Note: |this| could be deleted as part of this call.
+   delegate_->CloseCdmFileIO(this);
+ }
+ 
+ void MojoCdmFileIO::OnError(ErrorType error) {
+-  DVLOG(3) << __func__ << " file: " << file_name_ << ", error: " << (int)error;
++  LOG(ERROR) << "BSC]] " << __func__ << " file: " << file_name_ << ", error: " << (int)error;
+ 
+   base::ThreadTaskRunnerHandle::Get()->PostTask(
+       FROM_HERE, base::BindOnce(&MojoCdmFileIO::NotifyClientOfError,
