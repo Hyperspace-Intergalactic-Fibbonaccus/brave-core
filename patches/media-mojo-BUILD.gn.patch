@@ -1,0 +1,18 @@
+diff --git a/media/mojo/BUILD.gn b/media/mojo/BUILD.gn
+index 21dc54f037f08a963d99eb708d1da2794bfb2a1b..64dc01baa40c09f61a7379eac3f87faca1c4979e 100644
+--- a/media/mojo/BUILD.gn
++++ b/media/mojo/BUILD.gn
+@@ -22,11 +22,13 @@ buildflag_header("buildflags") {
+     assert(mojo_media_host == "none", "Mojo media is not enabled")
+     assert(!enable_test_mojo_media_client, "Mojo media is not enabled")
+   } else {
++    print("BSC]] enable_mojo_media=true; services=$mojo_media_services")
+     assert(mojo_media_services != [], "No mojo media service specified")
+     foreach(service, mojo_media_services) {
+       if (service == "renderer") {
+         enable_mojo_renderer = true
+       } else if (service == "cdm") {
++        print("BSC]] enable_mojo_cdm IS TRUE")
+         enable_mojo_cdm = true
+       } else if (service == "audio_decoder") {
+         enable_mojo_audio_decoder = true
