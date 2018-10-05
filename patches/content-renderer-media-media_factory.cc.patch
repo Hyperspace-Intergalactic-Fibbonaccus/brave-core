@@ -1,0 +1,30 @@
+diff --git a/content/renderer/media/media_factory.cc b/content/renderer/media/media_factory.cc
+index ce03299990f9b5671eede24bf4863968bcfa63da..ec48397960459642752a9fb6f31ecfc3715e4a16 100644
+--- a/content/renderer/media/media_factory.cc
++++ b/content/renderer/media/media_factory.cc
+@@ -586,10 +586,14 @@ media::mojom::RemoterFactory* MediaFactory::GetRemoterFactory() {
+ #endif
+ 
+ media::CdmFactory* MediaFactory::GetCdmFactory() {
+-  if (cdm_factory_)
++  LOG(ERROR) << "BSC]] MediaFactory::GetCdmFactory";
++  if (cdm_factory_){
++    LOG(ERROR) << "BSC]] MediaFactory::GetCdmFactory - returning existing ref";
+     return cdm_factory_.get();
++  }
+ 
+ #if BUILDFLAG(ENABLE_MOJO_CDM)
++  LOG(ERROR) << "BSC]] MediaFactory::GetCdmFactory - calling cdm_factory_.reset";
+   cdm_factory_.reset(new media::MojoCdmFactory(GetMediaInterfaceFactory()));
+ #endif  // BUILDFLAG(ENABLE_MOJO_CDM)
+ 
+@@ -598,7 +602,9 @@ media::CdmFactory* MediaFactory::GetCdmFactory() {
+ 
+ #if BUILDFLAG(ENABLE_MOJO_MEDIA)
+ media::mojom::InterfaceFactory* MediaFactory::GetMediaInterfaceFactory() {
++  LOG(ERROR) << "BSC]] MediaFactory::GetMediaInterfaceFactory 1";
+   if (!media_interface_factory_) {
++    LOG(ERROR) << "BSC]] MediaFactory::GetMediaInterfaceFactory 2";
+     DCHECK(remote_interfaces_);
+     media_interface_factory_.reset(
+         new MediaInterfaceFactory(remote_interfaces_));

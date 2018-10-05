@@ -1,5 +1,5 @@
 diff --git a/content/browser/media/media_interface_proxy.cc b/content/browser/media/media_interface_proxy.cc
-index 82b0c8c61ac4fc623056c96e62a002c1a8c79067..baca32c0c2eb76174693033d38e03e74f99c6787 100644
+index 82b0c8c61ac4fc623056c96e62a002c1a8c79067..ecfdd46d0367977a7d4bc7079a9b734a964a416b 100644
 --- a/content/browser/media/media_interface_proxy.cc
 +++ b/content/browser/media/media_interface_proxy.cc
 @@ -120,7 +120,7 @@ MediaInterfaceProxy::MediaInterfaceProxy(
@@ -42,7 +42,7 @@ index 82b0c8c61ac4fc623056c96e62a002c1a8c79067..baca32c0c2eb76174693033d38e03e74
    DCHECK(thread_checker_.CalledOnValidThread());
  
  #if defined(OS_ANDROID)
-@@ -183,21 +186,27 @@ void MediaInterfaceProxy::CreateRenderer(
+@@ -183,21 +186,29 @@ void MediaInterfaceProxy::CreateRenderer(
  void MediaInterfaceProxy::CreateCdm(
      const std::string& key_system,
      media::mojom::ContentDecryptionModuleRequest request) {
@@ -60,6 +60,8 @@ index 82b0c8c61ac4fc623056c96e62a002c1a8c79067..baca32c0c2eb76174693033d38e03e74
 +  if (factory) {
 +    LOG(ERROR) << "BSC]] factory->CreateCdm";
      factory->CreateCdm(key_system, std::move(request));
++  } else {
++    LOG(ERROR) << "BSC]] GetCdmFactory is falsey?";
 +  }
  #endif
  }
@@ -71,7 +73,7 @@ index 82b0c8c61ac4fc623056c96e62a002c1a8c79067..baca32c0c2eb76174693033d38e03e74
    InterfaceFactory* factory = GetMediaInterfaceFactory();
    if (factory)
      factory->CreateDecryptor(cdm_id, std::move(request));
-@@ -206,6 +215,7 @@ void MediaInterfaceProxy::CreateDecryptor(
+@@ -206,6 +217,7 @@ void MediaInterfaceProxy::CreateDecryptor(
  void MediaInterfaceProxy::CreateCdmProxy(
      const std::string& cdm_guid,
      media::mojom::CdmProxyRequest request) {
@@ -79,7 +81,7 @@ index 82b0c8c61ac4fc623056c96e62a002c1a8c79067..baca32c0c2eb76174693033d38e03e74
    NOTREACHED() << "The CdmProxy should only be created by a CDM.";
  }
  
-@@ -255,6 +265,8 @@ media::mojom::InterfaceFactory*
+@@ -255,6 +267,8 @@ media::mojom::InterfaceFactory*
  MediaInterfaceProxy::GetMediaInterfaceFactory() {
    DCHECK(thread_checker_.CalledOnValidThread());
  
@@ -88,7 +90,7 @@ index 82b0c8c61ac4fc623056c96e62a002c1a8c79067..baca32c0c2eb76174693033d38e03e74
    if (!interface_factory_ptr_)
      ConnectToMediaService();
  
-@@ -262,7 +274,7 @@ MediaInterfaceProxy::GetMediaInterfaceFactory() {
+@@ -262,7 +276,7 @@ MediaInterfaceProxy::GetMediaInterfaceFactory() {
  }
  
  void MediaInterfaceProxy::ConnectToMediaService() {
@@ -97,7 +99,7 @@ index 82b0c8c61ac4fc623056c96e62a002c1a8c79067..baca32c0c2eb76174693033d38e03e74
    DCHECK(!interface_factory_ptr_);
  
    media::mojom::MediaServicePtr media_service;
-@@ -282,7 +294,7 @@ void MediaInterfaceProxy::ConnectToMediaService() {
+@@ -282,7 +296,7 @@ void MediaInterfaceProxy::ConnectToMediaService() {
  }
  
  void MediaInterfaceProxy::OnMediaServiceConnectionError() {
@@ -106,16 +108,16 @@ index 82b0c8c61ac4fc623056c96e62a002c1a8c79067..baca32c0c2eb76174693033d38e03e74
    DCHECK(thread_checker_.CalledOnValidThread());
  
    interface_factory_ptr_.reset();
-@@ -294,6 +306,8 @@ media::mojom::CdmFactory* MediaInterfaceProxy::GetCdmFactory(
-     const std::string& key_system) {
-   DCHECK(thread_checker_.CalledOnValidThread());
+@@ -292,6 +306,8 @@ void MediaInterfaceProxy::OnMediaServiceConnectionError() {
  
+ media::mojom::CdmFactory* MediaInterfaceProxy::GetCdmFactory(
+     const std::string& key_system) {
 +  LOG(ERROR) << "BSC]] " << __func__;
 +
+   DCHECK(thread_checker_.CalledOnValidThread());
+ 
    std::string cdm_guid;
-   base::FilePath cdm_path;
-   std::string cdm_file_system_id;
-@@ -301,18 +315,22 @@ media::mojom::CdmFactory* MediaInterfaceProxy::GetCdmFactory(
+@@ -301,18 +317,22 @@ media::mojom::CdmFactory* MediaInterfaceProxy::GetCdmFactory(
    std::unique_ptr<CdmInfo> cdm_info =
        KeySystemSupportImpl::GetCdmInfoForKeySystem(key_system);
    if (!cdm_info) {
@@ -138,7 +140,7 @@ index 82b0c8c61ac4fc623056c96e62a002c1a8c79067..baca32c0c2eb76174693033d38e03e74
      NOTREACHED() << "Invalid file system ID " << cdm_info->file_system_id;
      return nullptr;
    }
-@@ -331,7 +349,7 @@ media::mojom::CdmFactory* MediaInterfaceProxy::ConnectToCdmService(
+@@ -331,7 +351,7 @@ media::mojom::CdmFactory* MediaInterfaceProxy::ConnectToCdmService(
      const std::string& cdm_guid,
      const base::FilePath& cdm_path,
      const std::string& cdm_file_system_id) {
@@ -147,7 +149,7 @@ index 82b0c8c61ac4fc623056c96e62a002c1a8c79067..baca32c0c2eb76174693033d38e03e74
  
    DCHECK(!cdm_factory_map_.count(cdm_guid));
    service_manager::Identity identity(media::mojom::kCdmServiceName,
-@@ -354,6 +372,7 @@ media::mojom::CdmFactory* MediaInterfaceProxy::ConnectToCdmService(
+@@ -354,16 +374,20 @@ media::mojom::CdmFactory* MediaInterfaceProxy::ConnectToCdmService(
  
    cdm_service->LoadCdm(cdm_path, std::move(token_provider_ptr));
  #else
@@ -155,7 +157,20 @@ index 82b0c8c61ac4fc623056c96e62a002c1a8c79067..baca32c0c2eb76174693033d38e03e74
    cdm_service->LoadCdm(cdm_path);
  #endif  // defined(OS_MACOSX)
  
-@@ -371,7 +390,7 @@ media::mojom::CdmFactory* MediaInterfaceProxy::ConnectToCdmService(
++  LOG(ERROR) << "BSC]] calling cdm_service->CreateCdmFactory";
+   media::mojom::CdmFactoryPtr cdm_factory_ptr;
+   cdm_service->CreateCdmFactory(MakeRequest(&cdm_factory_ptr),
+                                 GetFrameServices(cdm_guid, cdm_file_system_id));
++  LOG(ERROR) << "BSC]] factory.set_connection_error_handler";
+   cdm_factory_ptr.set_connection_error_handler(
+       base::BindOnce(&MediaInterfaceProxy::OnCdmServiceConnectionError,
+                      base::Unretained(this), cdm_guid));
+ 
++  LOG(ERROR) << "BSC]] calling returning cdm_factory";
+   auto* cdm_factory = cdm_factory_ptr.get();
+   cdm_factory_map_.emplace(cdm_guid, std::move(cdm_factory_ptr));
+   return cdm_factory;
+@@ -371,7 +395,7 @@ media::mojom::CdmFactory* MediaInterfaceProxy::ConnectToCdmService(
  
  void MediaInterfaceProxy::OnCdmServiceConnectionError(
      const std::string& cdm_guid) {
@@ -164,7 +179,7 @@ index 82b0c8c61ac4fc623056c96e62a002c1a8c79067..baca32c0c2eb76174693033d38e03e74
    DCHECK(thread_checker_.CalledOnValidThread());
  
    DCHECK(cdm_factory_map_.count(cdm_guid));
-@@ -381,7 +400,7 @@ void MediaInterfaceProxy::OnCdmServiceConnectionError(
+@@ -381,7 +405,7 @@ void MediaInterfaceProxy::OnCdmServiceConnectionError(
  void MediaInterfaceProxy::CreateCdmProxyInternal(
      const std::string& cdm_guid,
      media::mojom::CdmProxyRequest request) {

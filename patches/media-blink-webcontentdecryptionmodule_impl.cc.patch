@@ -1,5 +1,5 @@
 diff --git a/media/blink/webcontentdecryptionmodule_impl.cc b/media/blink/webcontentdecryptionmodule_impl.cc
-index 9c80d9a02c6c8c03f2935e12dfd3fafd717bfcd0..d6aecccb0c1abee24429705bda59f4e717219afb 100644
+index 9c80d9a02c6c8c03f2935e12dfd3fafd717bfcd0..1a5ee96e61122ab3159746f5a872bb1e8e9442aa 100644
 --- a/media/blink/webcontentdecryptionmodule_impl.cc
 +++ b/media/blink/webcontentdecryptionmodule_impl.cc
 @@ -68,12 +68,14 @@ void WebContentDecryptionModuleImpl::Create(
@@ -41,3 +41,18 @@ index 9c80d9a02c6c8c03f2935e12dfd3fafd717bfcd0..d6aecccb0c1abee24429705bda59f4e7
    adapter->CreateCdm(cdm_factory, key_system_ascii, security_origin, cdm_config,
                       std::move(result));
  }
+@@ -113,12 +118,14 @@ void WebContentDecryptionModuleImpl::Create(
+ WebContentDecryptionModuleImpl::WebContentDecryptionModuleImpl(
+     scoped_refptr<CdmSessionAdapter> adapter)
+     : adapter_(adapter) {
++  LOG(ERROR) << "BSC]] WebContentDecryptionModuleImpl";
+ }
+ 
+ WebContentDecryptionModuleImpl::~WebContentDecryptionModuleImpl() = default;
+ 
+ std::unique_ptr<blink::WebContentDecryptionModuleSession>
+ WebContentDecryptionModuleImpl::CreateSession() {
++  LOG(ERROR) << "BSC]] WebContentDecryptionModuleImpl::CreateSession";
+   return adapter_->CreateSession();
+ }
+ 
